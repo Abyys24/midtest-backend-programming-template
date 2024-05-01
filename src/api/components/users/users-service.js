@@ -8,15 +8,11 @@ const { hashPassword, passwordMatched } = require('../../../utils/password');
 async function getUsers() {
   const users = await usersRepository.getUsers();
 
-  const results = [];
-  for (let i = 0; i < users.length; i += 1) {
-    const user = users[i];
-    results.push({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    });
-  }
+  const results = users.map(user => ({  // Menggunakan metode map untuk menghasilkan array hasil
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  }));
 
   return results;
 }
@@ -161,6 +157,69 @@ async function changePassword(userId, password) {
   return true;
 }
 
+async function getUsersWithPagination(
+  page_number = 1,
+  page_size = 10,
+  sort = 'email:asc',
+  search
+) {
+  const filter = createFilter(search);
+  const sortOptions = createSortOptions(sort);
+  const { total_pages, users } = await getUsersData(
+    page_number,
+    page_size,
+    filter,
+    sortOptions
+  );
+
+  return {
+    page_number: parseInt(page_number),
+    page_size: parseInt(page_size),
+    count: users.length,
+    total_pages,
+    has_previous_page: page_number > 1,
+    has_next_page: page_number < total_pages,
+    data: users,
+  };
+}
+
+function createFilter(search) {
+  let filter = {};
+  if (search) {
+    filter = {
+      $or: [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ],
+    };
+  }
+  return filter;
+}
+
+function createSortOptions(sort) {
+  let sortField = 'email';
+  let sortOrder = 1;
+  if (sort) {
+    const [field, order] = sort.split(':');
+    sortField = field;
+    sortOrder = order === 'desc' ? -1 : 1;
+  }
+  return { [sortField]: sortOrder };
+}
+
+async function getUsersData(page_number, page_size, filter, sortOptions) {
+  const total_count = await usersRepository.getUserCount(filter);
+  const total_pages = Math.ceil(total_count / page_size);
+  const skip = (page_number - 1) * page_size;
+  const users = await usersRepository.getUsers(
+    page_size,
+    skip,
+    filter,
+    sortOptions
+  );
+
+  return { total_pages, users };
+}
 module.exports = {
   getUsers,
   getUser,

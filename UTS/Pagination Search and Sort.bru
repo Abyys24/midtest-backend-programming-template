@@ -1,0 +1,22 @@
+meta {
+  name: Pagination Search and Sort
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:5000/api/users?page_number=1&page_size=5&search=name:Abyys&sort=email:asc
+  body: json
+  auth: none
+}
+
+query {
+  page_number: 1
+  page_size: 5
+  search: name:Abyys
+  sort: email:asc
+}
+
+headers {
+  Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwidXNlcklkIjoiNjYyN2JkM2VmMDk1YmM0OWUxYzViZDM0IiwiaWF0IjoxNzE0NDkwNDYwLCJleHAiOjE3MTQ1NzY4NjB9.hcC4cuiOEcK4EEN-6fzKkB-gvzTsJAUzsxHWmbfiSw4
+}

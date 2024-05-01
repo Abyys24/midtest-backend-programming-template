@@ -1,5 +1,6 @@
 const usersService = require('./users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
+const { User } = require('../../../models');
 
 /**
  * Handle get list of users request
@@ -10,8 +11,61 @@ const { errorResponder, errorTypes } = require('../../../core/errors');
  */
 async function getUsers(request, response, next) {
   try {
-    const users = await usersService.getUsers();
-    return response.status(200).json(users);
+    const {
+      page_number = 1,
+      page_size = 10,
+      sort = 'email:asc',
+      search,
+    } = request.query;
+
+    let users;
+    let count;
+
+    if (page_number && page_size && sort) {
+      let filter = {};
+      if (search) {
+        const [columnName, searchValue] = search.split(':');
+        if (columnName && searchValue) {
+          filter = {
+            [columnName]: { $regex: searchValue, $options: 'i' },
+          };
+        }
+      }
+
+      let sortField = 'email';
+      let sortOrder = 1;
+      if (sort) {
+        const [field, order] = sort.split(':');
+        sortField = field;
+        sortOrder = order === 'desc' ? -1 : 1;
+      }
+      const sortOptions = { [sortField]: sortOrder };
+
+      count = await User.countDocuments(filter);
+      users = await getUsersWithPagination(
+        filter,
+        sortOptions,
+        parseInt(page_number),
+        parseInt(page_size)
+      );
+    } else {
+      users = await usersService.getUsers();
+      count = users.length;
+    }
+
+    const total_pages = Math.ceil(count / page_size);
+    const has_previous_page = page_number > 1;
+    const has_next_page = page_number < total_pages;
+
+    response.json({
+      page_number: parseInt(page_number),
+      page_size: parseInt(page_size),
+      count,
+      total_pages,
+      has_previous_page,
+      has_next_page,
+      data: users,
+    });
   } catch (error) {
     return next(error);
   }
@@ -189,6 +243,20 @@ async function changePassword(request, response, next) {
   }
 }
 
+async function getUsersWithPagination(
+  filter,
+  sortOptions,
+  page_number,
+  page_size
+) {
+  const skip = (page_number - 1) * page_size;
+  const users = await User.find(filter)
+    .sort(sortOptions)
+    .skip(skip)
+    .limit(page_size);
+
+  return users;
+}
 module.exports = {
   getUsers,
   getUser,

@@ -1,0 +1,24 @@
+meta {
+  name: Create Users
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:5000/api/users
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwidXNlcklkIjoiNjYyN2JkM2VmMDk1YmM0OWUxYzViZDM0IiwiaWF0IjoxNzE0NDkwNDYwLCJleHAiOjE3MTQ1NzY4NjB9.hcC4cuiOEcK4EEN-6fzKkB-gvzTsJAUzsxHWmbfiSw4
+}
+
+body:json {
+  {
+    "name" : "Abyys",
+    "email" : "Kelasbang@gmail.com",
+    "password" : "Kelasbang12!",
+    "password_confirm" : "Kelasbang12!"
+  }
+}
