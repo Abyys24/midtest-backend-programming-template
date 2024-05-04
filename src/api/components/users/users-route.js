@@ -42,4 +42,47 @@ module.exports = (app) => {
     celebrate(usersValidator.changePassword),
     usersControllers.changePassword
   );
+  // Endpoint to handle creating purchases
+  route.post(
+    '/products',
+    authenticationMiddleware,
+    celebrate(usersValidator.createProducts), // You need to define the validation schema for creating a purchase
+    usersControllers.createProducts
+  );
+
+  // Endpoint to fetch the list of products
+  route.get(
+    '/products',
+    authenticationMiddleware,
+    usersControllers.getProducts
+  );
+
+// Endpoint to fetch the list of products
+route.get(
+  '/product/:id',
+  authenticationMiddleware,
+  usersControllers.getProduct
+);
+
+// Endpoint to handle creating purchases
+route.post(
+  '/purchases',
+  authenticationMiddleware,
+  celebrate(usersValidator.createPurchases), // You need to define the validation schema for creating a purchase
+  usersControllers.createPurchases
+);
+  // Endpoint to update a purchase by its ID
+  route.put(
+    '/purchases/:id',
+    authenticationMiddleware,
+    celebrate(usersValidator.updatePurchases), // You need to define the validation schema for updating a purchase
+    usersControllers.updatePurchases
+  );
+
+  // Endpoint to delete a purchase by its ID
+  route.delete(
+    '/purchases/:id',
+    authenticationMiddleware,
+    usersControllers.deletePurchases
+  );
 };

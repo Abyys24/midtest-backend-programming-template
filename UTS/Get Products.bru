@@ -1,20 +1,13 @@
 meta {
-  name: Pagination Search and Sort
+  name: Get Products
   type: http
-  seq: 6
+  seq: 9
 }
 
 get {
-  url: http://localhost:5000/api/users?page_number=1&page_size=5&search=name:s&sort=email:asc
+  url: http://localhost:5000/api/users/product/6636352f693c7dc2385702d1
   body: json
   auth: none
-}
-
-query {
-  page_number: 1
-  page_size: 5
-  search: name:s
-  sort: email:asc
 }
 
 headers {

@@ -1,20 +1,13 @@
 meta {
-  name: Pagination Search and Sort
+  name: Get Purchases
   type: http
-  seq: 6
+  seq: 13
 }
 
 get {
-  url: http://localhost:5000/api/users?page_number=1&page_size=5&search=name:s&sort=email:asc
-  body: json
+  url: http://localhost:5000/api/users/purchases
+  body: none
   auth: none
-}
-
-query {
-  page_number: 1
-  page_size: 5
-  search: name:s
-  sort: email:asc
 }
 
 headers {

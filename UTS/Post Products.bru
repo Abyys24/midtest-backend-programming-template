@@ -1,22 +1,24 @@
 meta {
-  name: Pagination Search and Sort
+  name: Post Products
   type: http
-  seq: 6
+  seq: 8
 }
 
-get {
-  url: http://localhost:5000/api/users?page_number=1&page_size=5&search=name:s&sort=email:asc
+post {
+  url: http://localhost:5000/api/users/products
   body: json
   auth: none
 }
 
-query {
-  page_number: 1
-  page_size: 5
-  search: name:s
-  sort: email:asc
-}
-
 headers {
   Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwidXNlcklkIjoiNjYyN2JkM2VmMDk1YmM0OWUxYzViZDM0IiwiaWF0IjoxNzE0ODEzMjYwLCJleHAiOjE3MTQ4OTk2NjB9.Yq0guKvm9jnynOAguH__N5xRCsK5HyTzO05R3sGQx1Q
+}
+
+body:json {
+  {
+    "name": "Bayam",
+    "price": "7000",
+    "quantity": "60"
+  }
+  
 }

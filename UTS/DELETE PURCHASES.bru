@@ -1,20 +1,13 @@
 meta {
-  name: Pagination Search and Sort
+  name: DELETE PURCHASES
   type: http
-  seq: 6
+  seq: 12
 }
 
-get {
-  url: http://localhost:5000/api/users?page_number=1&page_size=5&search=name:s&sort=email:asc
-  body: json
+delete {
+  url: http://localhost:5000/api/users/purchases/66365a37f168449f89c5b447
+  body: none
   auth: none
-}
-
-query {
-  page_number: 1
-  page_size: 5
-  search: name:s
-  sort: email:asc
 }
 
 headers {

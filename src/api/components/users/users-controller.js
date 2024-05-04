@@ -1,7 +1,7 @@
 const usersService = require('./users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
-const { User } = require('../../../models');
-
+const { User, products } = require('../../../models');
+const { purchases } = require('../../../models');
 /**
  * Handle get list of users request
  * @param {object} request - Express request object
@@ -257,6 +257,151 @@ async function getUsersWithPagination(
 
   return users;
 }
+/**
+ * Handle create purchase request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+async function createProducts(request, response, next) {
+  try {
+    const name = request.body.name;
+    const price = request.body.price;
+    const quantity = request.body.quantity;
+
+    const success = await usersService.createProducts(name, price, quantity);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to create products'
+      );
+    }
+    // Logic to create purchase
+    // Example: const purchase = await purchaseService.createPurchase(request.body);
+    return response.status(201).json({ message: 'Purchase created successfully' });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * Handle get list of products request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+async function getProducts(request, response, next) {
+  try {
+    const products = await usersService.getProducts();
+    return response.status(200).json(products);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * Handle get user detail request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+async function getProduct(request, response, next) {
+  try {
+    const product = await usersService.getProduct(request.params.id);
+
+    if (!product) {
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Unknown product');
+    }
+
+    return response.status(200).json(product);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * Handle purchases user request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+async function deletePurchases(request, response, next) {
+  try {
+    const id = request.params.id;
+
+    const success = await usersService.deletePurchases(id);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to delete purchases'
+      );
+    }
+
+    return response.status(200).json({ id });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * Handle create purchase request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+async function createPurchases(request, response, next) {
+  try {
+    const name = request.body.name;
+    const price = request.body.price;
+    const quantity = request.body.quantity;
+
+    const success = await usersService.createPurchases(name, price, quantity);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to create products'
+      );
+    }
+    // Logic to create purchase
+    // Example: const purchase = await purchaseService.createPurchase(request.body);
+    return response.status(201).json({ message: 'Purchase created successfully' });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * Handle update purchases request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+async function updatePurchases(request, response, next) {
+  try {
+    const id = request.params.id;
+    const name = request.body.name;
+    const quantity = request.body.quantity;
+    const price = request.body.price;
+
+    const success = await usersService.updatePurchases(id, name, quantity, price);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to update purchases'
+      );
+    }
+
+    return response.status(200).json({ id });
+  } catch (error) {
+    return next(error);
+  }
+}
 module.exports = {
   getUsers,
   getUser,
@@ -264,4 +409,10 @@ module.exports = {
   updateUser,
   deleteUser,
   changePassword,
+  createProducts,
+  deletePurchases,
+  getProducts,
+  getProduct,
+  createPurchases,
+  updatePurchases,
 };

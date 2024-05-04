@@ -1,5 +1,6 @@
 const joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
+const { createProducts, createPurchases } = require('./users-repository');
 const joiPassword = joi.extend(joiPasswordExtendCore);
 
 module.exports = {
@@ -46,6 +47,32 @@ module.exports = {
         .required()
         .label('New password'),
       password_confirm: joi.string().required().label('Password confirmation'),
+    },
+  },
+  createProducts: {
+    body: {
+      name: joi.string().required().label('Product Name'),
+      quantity: joi.number().integer().min(1).required().label('Quantity'),
+      price: joi.number().min(0).required().label('Price'),
+      // Add more validation rules as needed for other fields such as price, etc.
+    },
+  },
+
+  createPurchases: {
+    body: {
+      name: joi.string().required().label('Product Name'),
+      quantity: joi.number().integer().min(1).required().label('Quantity'),
+      price: joi.number().min(0).required().label('Price'),
+      // Add more validation rules as needed for other fields such as price, etc.
+    },
+  },
+  
+  updatePurchases: {
+    body: {
+      name: joi.string().label('Product Name'),
+      quantity: joi.number().integer().min(1).label('Quantity'),
+      price: joi.number().min(0).label('Price'),
+      // Add more validation rules as needed for other fields that can be updated
     },
   },
 };
